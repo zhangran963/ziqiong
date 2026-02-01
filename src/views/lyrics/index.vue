@@ -1,18 +1,19 @@
 <template>
   <header class="lyrics-header">
-    <EnterVideo></EnterVideo>
-    <EnterAudio></EnterAudio>
+    静态内容
+    <!-- <EnterVideo></EnterVideo> -->
+    <!-- <EnterAudio></EnterAudio> -->
   </header>
   <main class="lyrics-main">
     <template v-for="(item, index) of lyrics" :key="index">
-      <ImageWrap v-bind="item" ref="wraps">
+      <!-- <ImageWrap v-bind="item" ref="wraps">
         <img class="lyrics-main-img" :src="`${item.url}?imageMogr2/thumbnail/!20p`" @click="onPreview(item)" />
-      </ImageWrap>
+      </ImageWrap> -->
     </template>
   </main>
 </template>
 
-<script lang="js">
+<!-- <script lang="js">
 import ImageWrap from '@/components/ImageWrap.vue'
 import { useList, useScroll, usePreviewImage } from './hooks'
 import { watch, defineAsyncComponent } from 'vue'
@@ -45,9 +46,9 @@ export default {
     }
   },
 }
-</script>
+</script> -->
 
-<style lang="css">
+<!-- <style lang="css">
 .lyrics-header {
   padding: 15px 15px 0;
   margin-bottom: 30px;
@@ -85,4 +86,4 @@ export default {
     }
   }
 }
-</style>
+</style> -->
