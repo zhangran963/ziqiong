@@ -26,7 +26,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="css">
 .image-modal {
   img {
     max-width: 95vw;

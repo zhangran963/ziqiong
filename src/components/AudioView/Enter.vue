@@ -46,7 +46,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="css">
 .enteraudio {
   perspective: 700px;
 
@@ -58,6 +58,7 @@ export default {
   border-radius: 50%;
 
   @include flex();
+
   &-icon {
     width: 88%;
     height: 88%;

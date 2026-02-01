@@ -7,20 +7,10 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="js">
 const WHeight = window.innerHeight
 const ratio = 0
 export default {
-  // props: {
-  //   topOffset: {
-  //     type: Number,
-  //     default: WHeight * ratio,
-  //   },
-  //   bottomOffset: {
-  //     type: Number,
-  //     default: WHeight * ratio,
-  //   },
-  // },
   inheritAttrs: false,
   data() {
     return {
@@ -31,7 +21,7 @@ export default {
     }
   },
   mounted() {
-    const wrapEle = this.$refs.wrap as HTMLDivElement
+    const wrapEle = this.$refs.wrap
     const { top, bottom } = wrapEle.getBoundingClientRect()
 
     this.top = top
@@ -53,7 +43,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="css">
 .image-wrap {
   list-style-type: none;
   -webkit-transform: translate3d(0, 0, 0);
@@ -69,6 +59,7 @@ export default {
   transition: transform 640ms ease-in-out;
 
   &:nth-child(odd) {
+
     .image-wrap-front,
     .image-wrap-back {
       background-color: #e7f7ff;
@@ -76,6 +67,7 @@ export default {
   }
 
   &:nth-child(even) {
+
     .image-wrap-front,
     .image-wrap-back {
       background-color: #ece1da;

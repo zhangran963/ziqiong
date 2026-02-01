@@ -1,19 +1,10 @@
 <template>
   <div class="video-modal">
     <!-- 视频 -->
-    <video
-      class="video"
-      poster="https://ran-1303246897.file.myqcloud.com/www/lyric/video/yesterday%20once%20more.jpg"
+    <video class="video" poster="https://ran-1303246897.file.myqcloud.com/www/lyric/video/yesterday%20once%20more.jpg"
       src="https://ran-1303246897.file.myqcloud.com/www/lyric/video/yesterday%20once%20more%20-%20360p.mp4"
-      controls="true"
-      preload="auto"
-      webkit-playsinline="true"
-      playsinline="true"
-      x-webkit-airplay="allow"
-      x5-video-player-type="h5"
-      x5-video-player-fullscreen="true"
-      x5-video-orientation="landscape"
-    ></video>
+      controls="true" preload="auto" webkit-playsinline="true" playsinline="true" x-webkit-airplay="allow"
+      x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-orientation="landscape"></video>
 
     <i class="close-icon" @click="onClose"></i>
   </div>
@@ -28,7 +19,7 @@ const onClose = () => {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 .video-modal {
   display: flex;
   justify-content: center;

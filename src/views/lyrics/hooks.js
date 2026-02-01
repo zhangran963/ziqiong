@@ -1,6 +1,5 @@
 import { defineAsyncComponent, onMounted, ref } from 'vue'
-import { fetchLyricList, type ILyricItem } from '@/services/lyric'
-import ImageWrapVue from '@/components/ImageWrap.vue'
+import { fetchLyricList } from '@/services/api'
 import { useDialog } from '@/hooks/useDialog'
 
 export const useList = () => {
@@ -24,7 +23,7 @@ export const useList = () => {
 }
 
 export const useScroll = () => {
-  const wraps = ref<InstanceType<typeof ImageWrapVue>[]>([])
+  const wraps = ref([])
   const screenHeight = window.innerHeight
   const offset = screenHeight * 0.5 // 偏移量
   const onScroll = () => {
@@ -49,7 +48,7 @@ export const useScroll = () => {
 
 export const usePreviewImage = () => {
   const $dialog = useDialog()
-  const onPreview = (item: ILyricItem) => {
+  const onPreview = (item) => {
     $dialog.show(
       defineAsyncComponent(() => import('@/components/ImageView/modal.vue')),
       {

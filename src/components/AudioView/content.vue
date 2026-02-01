@@ -13,7 +13,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="css">
 .enteraudio-cover {
   opacity: 1;
 

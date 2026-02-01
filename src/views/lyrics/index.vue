@@ -6,17 +6,13 @@
   <main class="lyrics-main">
     <template v-for="(item, index) of lyrics" :key="index">
       <ImageWrap v-bind="item" ref="wraps">
-        <img
-          class="lyrics-main-img"
-          :src="`${item.url}?imageMogr2/thumbnail/!20p`"
-          @click="onPreview(item)"
-        />
+        <img class="lyrics-main-img" :src="`${item.url}?imageMogr2/thumbnail/!20p`" @click="onPreview(item)" />
       </ImageWrap>
     </template>
   </main>
 </template>
 
-<script lang="ts">
+<script lang="js">
 import ImageWrap from '@/components/ImageWrap.vue'
 import { useList, useScroll, usePreviewImage } from './hooks'
 import { watch, defineAsyncComponent } from 'vue'
@@ -51,9 +47,8 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="css">
 .lyrics-header {
-  @include flex(space-between);
   padding: 15px 15px 0;
   margin-bottom: 30px;
 
@@ -69,10 +64,10 @@ export default {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   grid-auto-rows: 170px;
-  grid-gap: 2px; // 行列的间距
-  grid-auto-flow: row dense; // 即使某项超宽, 改变网页宽度时, 也能满填充
+  grid-gap: 2px;
+  grid-auto-flow: row dense;
 
-  // perspective: 1000px;
+  perspective: 1000px;
 
   &-img {
     max-width: 90%;

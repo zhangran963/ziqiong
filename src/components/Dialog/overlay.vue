@@ -18,7 +18,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="css">
 .dialog-overlay {
   position: fixed;
   left: 0;
