@@ -1,8 +1,7 @@
 name = "ziqiong"
-pages_build_output_dir = "dist"
 compatibility_date = "2026-02-01"
+pages_build_output_dir = "dist"
 
 [[r2_buckets]]
-binding = "MY_BUCKET" # 代码中使用的名称
-bucket_name = "duan" # R2 中真实的桶名
-preview_bucket_name = "duan"
+binding = "MY_BUCKET"
+bucket_name = "duan"
