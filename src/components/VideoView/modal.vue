@@ -10,7 +10,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="js">
 import { useDialog } from '@/hooks/useDialog'
 
 const $dialog = useDialog()
