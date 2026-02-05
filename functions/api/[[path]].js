@@ -12,11 +12,25 @@ export async function onRequest(context) {
     if (!object) return new Response("Not Found", { status: 404 });
 
     const headers = new Headers();
+
+    // 写入 R2 自带元数据
     object.writeHttpMetadata(headers);
-    // 设置强缓存，让图片加载更快
-    headers.set("Cache-Control", "public, max-age=604800");
+
+    // --- 强制修正逻辑 ---
+    // 如果 R2 里的类型不对，我们根据文件后缀手动补全，确保浏览器认得它是图片
+    if (path.endsWith(".png")) headers.set("Content-Type", "image/png");
+    if (path.endsWith(".jpg") || path.endsWith(".jpeg")) headers.set("Content-Type", "image/jpeg");
+    if (path.endsWith(".webp")) headers.set("Content-Type", "image/webp");
+    if (path.endsWith(".gif")) headers.set("Content-Type", "image/gif");
+
     headers.set("Access-Control-Allow-Origin", "*");
-    return new Response(object.body, { headers });
+    headers.set("Cache-Control", "public, max-age=604800");
+
+    // 必须确保返回的是 object.body，不要做任何 .text() 转换
+    return new Response(object.body, {
+      headers,
+      status: 200,
+    });
   }
 
   // 2. 目录列表逻辑 (如：/api/lyrics/)
