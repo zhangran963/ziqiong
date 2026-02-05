@@ -12,8 +12,15 @@ export default defineConfig({
     },
   },
   server: {
+    // 线上有个独立worker可访问; 但最终逻辑应该放在本项目的functions里
     proxy: {
-      "/api": "http://localhost:8888", // 代理到 wrangler 端口
+      "/api": {
+        target: "https://api.duanziqiong.com",
+        changeOrigin: true,
+        // 关键点：因为线上地址是 https://api.duanziqiong.com/lyrics
+        // 而本地请求是 /api/lyrics，所以我们需要把开头的 /api 去掉
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
     },
   },
 });
