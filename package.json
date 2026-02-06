@@ -8,7 +8,7 @@
     "dev": "vite",
     "dev:local": "wrangler pages dev --proxy 5173 -- npm run vite",
     "dev:remote": "wrangler pages dev --remote --proxy 5173 -- npm run vite",
-    "build:wasm": "cd image-processor && wasm-pack build --target web && cp pkg/image_processor.js ../functions/api/ && cp pkg/image_processor_bg.wasm ../functions/api/",
+    "build:wasm": "cd image-processor && wasm-pack build --target web && cp pkg/image_processor.js ../functions/api/ && cp pkg/image_processor_bg.wasm ../functions/api/ && ls -lh ../functions/api/image_processor*",
     "build:web": "vite build",
     "build": "npm run build:wasm && npm run build:web",
     "deploy": "npm run build:wasm && npx wrangler pages deploy dist",
