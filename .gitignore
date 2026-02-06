@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Rust 编译产物
+image-processor/target/
+
+# wasm-pack 生成的临时文件夹
+image-processor/pkg/
+
+.DS_Store

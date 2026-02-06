@@ -1,0 +1,18 @@
+[package]
+name = "image-processor"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+# 核心图片处理库，禁用默认功能以减小体积
+image = { version = "0.24", default-features = false, features = ["jpeg", "png", "webp"] }
+wasm-bindgen = "0.2"
+
+[profile.release]
+opt-level = "z"     # 优化代码体积
+lto = true          # 启用链接时优化
+codegen-units = 1   # 牺牲编译速度换取更好的优化
+panic = "abort"     # 减少异常处理代码
