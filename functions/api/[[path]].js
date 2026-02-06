@@ -1,3 +1,5 @@
+const IMAGE_BASE_URL = "https://store.duanziqiong.com/";
+
 export async function onRequest(context) {
   const { request, env } = context;
   const url = new URL(request.url);
@@ -8,29 +10,24 @@ export async function onRequest(context) {
   // 1. 文件读取逻辑 (如：/api/lyrics/71.png)
   const isFile = /\.(jpg|jpeg|png|gif|webp|mp3|txt)$/i.test(path);
   if (isFile) {
-    const object = await env.MY_BUCKET.get(path);
-    if (!object) return new Response("Not Found", { status: 404 });
+    // 1. 构造目标 URL
+    // 将 /api/lyrics/22.png 转换为 https://store.duanziqiong.com/lyrics/22.png
+    const remoteUrl = `${IMAGE_BASE_URL}${path}`;
 
-    const headers = new Headers();
-
-    // 写入 R2 自带元数据
-    object.writeHttpMetadata(headers);
-
-    // --- 强制修正逻辑 ---
-    // 如果 R2 里的类型不对，我们根据文件后缀手动补全，确保浏览器认得它是图片
-    if (path.endsWith(".png")) headers.set("Content-Type", "image/png");
-    if (path.endsWith(".jpg") || path.endsWith(".jpeg")) headers.set("Content-Type", "image/jpeg");
-    if (path.endsWith(".webp")) headers.set("Content-Type", "image/webp");
-    if (path.endsWith(".gif")) headers.set("Content-Type", "image/gif");
-
-    headers.set("Access-Control-Allow-Origin", "*");
-    headers.set("Cache-Control", "public, max-age=604800");
-
-    // 必须确保返回的是 object.body，不要做任何 .text() 转换
-    return new Response(object.body, {
-      headers,
-      status: 200,
+    // 2. 发起子请求
+    const response = await fetch(remoteUrl, {
+      method: request.method,
+      headers: request.headers,
     });
+
+    // 3. 克隆响应并修改 Header（可选）
+    const newResponse = new Response(response.body, response);
+
+    // 确保跨域和缓存设置正确
+    newResponse.headers.set("Access-Control-Allow-Origin", "*");
+    newResponse.headers.set("Cache-Control", "public, max-age=604800");
+
+    return newResponse;
   }
 
   // 2. 目录列表逻辑 (如：/api/lyrics/)
