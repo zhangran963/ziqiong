@@ -26,7 +26,7 @@ export default {
   top: 0;
   bottom: 0;
   z-index: 10000;
-  background-color: rgba(0, 0, 0, 0.68);
+  background-color: rgba(0, 0, 0, 0.88);
 
   @include flex();
 }

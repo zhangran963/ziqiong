@@ -3,23 +3,25 @@
     ref="gridContainer"
     class="p-1 sm:p-4 md:p-6 grid grid-cols-3 gap-x-2 sm:grid-cols-3 sm:gap-x-4 lg:grid-cols-4 lg:gap-x-6 xl:grid-cols-5 grid-auto-rows-[4px] antialiased bg-gray-100/80 dark:bg-gray-900 min-h-screen">
       <div v-for="(file, index) in fileObjects" :key="file.name"
-        class="item-container group rounded-lg sm:rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-800 relative border border-gray-200/80 dark:border-gray-700 shadow-sm transition-all duration-500 ease-out"
+        class="item-container group rounded-lg sm:rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-800 relative border border-gray-200/80 dark:border-gray-700 shadow-sm transition-all duration-500 ease-out cursor-pointer"
         :style="{
           // 核心优化：动态计算跨度，响应窗口大小变化
           gridRowEnd: `span ${itemSpans[file.name] || 30}`,
           transitionDelay: `${index * 20}ms`,
-        }">
+        }"
+        @click="openPreview(file)">
         <div v-if="!loaded[file.name]"
           class="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-100 via-white to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 z-10"></div>
 
         <img :src="getImageUrl(`lyrics/${getThumbnailPath(file)}`, false)"
           :loading="index < 15 ? 'eager' : 'lazy'" decoding="async" @load="handleImageLoad(file.name)"
-          class="w-full h-auto block transition-all duration-700"
+          class="w-full h-auto block transition-all duration-700 pointer-events-none"
           :class="[loaded[file.name] ? 'opacity-100 scale-100' : 'opacity-0 scale-95 blur-sm']" :alt="file.name" />
 
         <div
-          class="absolute bottom-0 w-full p-1 sm:p-2 bg-gradient-to-t from-black/70 dark:from-black/80 to-transparent opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-20">
+          class="absolute bottom-0 w-full p-1 sm:p-2 bg-gradient-to-t from-black/70 dark:from-black/80 to-transparent opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-20 pointer-events-none">
           <span class="text-[8px] sm:text-xs text-white truncate block">{{ file.name }}</span>
+          <span class="text-[8px] sm:text-xs text-white/80 block mt-0.5">点击预览原图</span>
         </div>
       </div>
     </div>
@@ -28,8 +30,17 @@
 <script setup>
 import { ref, reactive, onMounted, onUnmounted, nextTick } from "vue";
 import { getR2List, getImageUrl } from "@/services/api";
+import { useDialog } from "@/hooks/useDialog";
+import ImageViewModal from "@/components/ImageView/modal.vue";
 
 const fileObjects = ref([]); // 存储完整的对象 { name, thumbnailName, width, height }
+const $dialog = useDialog();
+
+/** 打开原图预览（Lightbox） */
+const openPreview = (file) => {
+  const originalUrl = getImageUrl(`lyrics/${file.name}`, false);
+  $dialog.show(ImageViewModal, { props: { src: originalUrl } });
+};
 
 /** 预览页只显示缩略图：始终用缩略图路径，避免请求原图 */
 const getThumbnailPath = (file) => {
