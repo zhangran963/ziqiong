@@ -1,9 +1,9 @@
 <template>
   <div
     ref="gridContainer"
-    class="p-1 sm:p-4 md:p-6 grid grid-cols-3 gap-x-2 sm:grid-cols-3 sm:gap-x-4 lg:grid-cols-4 lg:gap-x-6 xl:grid-cols-5 grid-auto-rows-[4px] antialiased bg-gray-50 dark:bg-gray-900 min-h-screen">
+    class="p-1 sm:p-4 md:p-6 grid grid-cols-3 gap-x-2 sm:grid-cols-3 sm:gap-x-4 lg:grid-cols-4 lg:gap-x-6 xl:grid-cols-5 grid-auto-rows-[4px] antialiased bg-gray-100/80 dark:bg-gray-900 min-h-screen">
       <div v-for="(file, index) in fileObjects" :key="file.name"
-        class="item-container group rounded-lg sm:rounded-xl overflow-hidden bg-white dark:bg-gray-800 relative border border-gray-100 dark:border-gray-700 shadow-sm transition-all duration-500 ease-out"
+        class="item-container group rounded-lg sm:rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-800 relative border border-gray-200/80 dark:border-gray-700 shadow-sm transition-all duration-500 ease-out"
         :style="{
           // 核心优化：动态计算跨度，响应窗口大小变化
           gridRowEnd: `span ${itemSpans[file.name] || 30}`,
@@ -12,7 +12,7 @@
         <div v-if="!loaded[file.name]"
           class="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-100 via-white to-gray-100 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 z-10"></div>
 
-        <img :src="getImageUrl(`lyrics/${file.thumbnailName || file.name}`, false)"
+        <img :src="getImageUrl(`lyrics/${getThumbnailPath(file)}`, false)"
           :loading="index < 15 ? 'eager' : 'lazy'" decoding="async" @load="handleImageLoad(file.name)"
           class="w-full h-auto block transition-all duration-700"
           :class="[loaded[file.name] ? 'opacity-100 scale-100' : 'opacity-0 scale-95 blur-sm']" :alt="file.name" />
@@ -30,6 +30,16 @@ import { ref, reactive, onMounted, onUnmounted, nextTick } from "vue";
 import { getR2List, getImageUrl } from "@/services/api";
 
 const fileObjects = ref([]); // 存储完整的对象 { name, thumbnailName, width, height }
+
+/** 预览页只显示缩略图：始终用缩略图路径，避免请求原图 */
+const getThumbnailPath = (file) => {
+  const base = file.thumbnailName || file.name;
+  if (base.includes("_thumb.")) return base;
+  const lastDot = base.lastIndexOf(".");
+  const thumb =
+    lastDot > 0 ? `${base.slice(0, lastDot)}_thumb${base.slice(lastDot)}` : `${base}_thumb`;
+  return thumb;
+};
 const loaded = reactive({});
 const itemSpans = reactive({}); // 存储每个图片的动态 span 值
 const gridContainer = ref(null);
@@ -40,47 +50,31 @@ const GAP_ADJUSTMENT = 4; // gap 的微调值
 
 /**
  * 动态计算当前列宽
- * 根据容器宽度和 CSS 断点，返回实际的单列宽度
  */
 const getCurrentColumnWidth = () => {
-  if (!gridContainer.value) return 200; // 默认值
+  if (!gridContainer.value) return 200;
 
   const containerWidth = gridContainer.value.offsetWidth;
   const computedStyle = window.getComputedStyle(gridContainer.value);
-
-  // 获取实际的 gap 值（px）
   const gap = parseFloat(computedStyle.columnGap) || 8;
 
-  // 获取当前列数（根据 Tailwind 断点）
   const width = window.innerWidth;
   let columns;
-  if (width >= 1280) {
-    columns = 5; // xl:grid-cols-5
-  } else if (width >= 1024) {
-    columns = 4; // lg:grid-cols-4
-  } else {
-    columns = 3; // 默认 grid-cols-3
-  }
+  if (width >= 1280) columns = 5;
+  else if (width >= 1024) columns = 4;
+  else columns = 3;
 
-  // 计算单列宽度：(容器宽度 - 所有 gap 的总宽度) / 列数
-  const columnWidth = (containerWidth - gap * (columns - 1)) / columns;
-
-  return columnWidth;
+  return (containerWidth - gap * (columns - 1)) / columns;
 };
 
 /**
- * 核心：动态计算跨度
- * 根据实际列宽和图片宽高比计算准确的 grid span
+ * 根据列宽和图片宽高比计算 grid span
  */
 const calculateSpan = (file, columnWidth) => {
-  if (!file.width || !file.height) return 30; // 兜底高度
+  if (!file.width || !file.height) return 30;
 
   const aspectRatio = file.height / file.width;
-
-  // 使用实际列宽计算图片应该占用的高度
   const estimatedHeight = columnWidth * aspectRatio;
-
-  // 计算需要的行数（span）
   return Math.ceil((estimatedHeight + GAP_ADJUSTMENT) / ROW_HEIGHT);
 };
 
@@ -132,17 +126,11 @@ onMounted(async () => {
     // 等待 DOM 更新
     await nextTick();
 
-    // 延迟计算，确保容器有实际宽度
     const initLayout = () => {
       if (gridContainer.value && gridContainer.value.offsetWidth > 0) {
         recalculateAllSpans();
-
-        // 再次确认布局（防止首次计算不准确）
-        requestAnimationFrame(() => {
-          recalculateAllSpans();
-        });
+        requestAnimationFrame(recalculateAllSpans);
       } else {
-        // 如果容器还没有宽度，再等一帧
         requestAnimationFrame(initLayout);
       }
     };

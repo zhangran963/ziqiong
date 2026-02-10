@@ -11,10 +11,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* 默认亮色模式 */
+/* 默认亮色模式 - 柔和背景 */
 :root {
-  color: #213547;
-  background-color: #ffffff;
+  color: #1f2937;
+  background-color: #f5f5f4;
 }
 
 /* 暗色模式 - 根据系统设置 */
@@ -39,6 +39,12 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+}
+
+/* 亮色模式：柔和背景 */
+html:not(.dark),
+body:not(.dark) {
+  background-color: #f5f5f4;
 }
 
 /* 确保 body 在暗色模式下有深色背景 */

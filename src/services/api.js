@@ -1,15 +1,11 @@
 /**
  * API 服务模块
- * 
- * API 版本检测：
- * - 生产环境 → 新 API（/api/list/、/api/images/）
- * - 开发 localhost:8788 → 新 API（/api/list/、/api/images/）
- * - 开发 localhost:5173 → 旧 API（/api/lyrics）代理到线上
+ *
+ * 统一使用新 API（/api/list/、/api/images/），保证 5173 与 8788 布局一致。
+ * - 生产 / 8788 / 5173 均走新 API；5173 需通过 Vite 代理到 8788 或同源。
  */
 
-// 检测是否使用新 API 结构
-// 生产环境（无端口）或本地 Functions（8788）使用新 API
-const useNewAPI = !window.location.port || window.location.port === '8788';
+const useNewAPI = true;
 
 /**
  * 获取 R2 存储桶目录列表

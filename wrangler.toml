@@ -6,9 +6,8 @@ name = "ziqiong"
 # 兼容性日期 - 锁定 Cloudflare Workers 运行时版本
 compatibility_date = "2026-02-10"
 
-# Pages 构建输出目录（部署时需要）
-# 注意：运行 npm run dev 时需注释此行，否则与 --proxy 冲突
-pages_build_output_dir = "dist"
+# Pages 构建输出目录（部署时需要；dev 时注释掉）
+# pages_build_output_dir = "dist"
 
 # R2 存储桶绑定
 [[r2_buckets]]

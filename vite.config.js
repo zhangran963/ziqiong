@@ -12,22 +12,15 @@ export default defineConfig({
     },
   },
   server: {
-    // ⚠️ 注意：本地开发强烈建议使用 npm run dev:local
-    // 这样才能测试本地的 Functions API（新结构）
-    // 
-    // 如果使用 npm run vite，会代理到线上环境（可能还是旧 API 结构）
+    // 5173 单独运行时：/api 代理到 8788，与 npm run dev 同源，列表与布局一致
+    // 先启动 npm run dev（8788），再开 npm run vite（5173）即可
     proxy: {
       "/api": {
-        target: "https://api.duanziqiong.com",
+        target: "http://127.0.0.1:8788",
         changeOrigin: true,
-        // 代理到线上环境（去掉 /api 前缀）
-        rewrite: (path) => path.replace(/^\/api/, ""),
-        configure: (proxy, options) => {
-          proxy.on('error', (err, req, res) => {
-            console.log('代理错误:', err);
-          });
-          proxy.on('proxyReq', (proxyReq, req, res) => {
-            console.log('代理请求:', req.method, req.url, '→', options.target + req.url);
+        configure: (proxy) => {
+          proxy.on("error", (err, req, res) => {
+            console.warn("API 代理错误（请先运行 npm run dev 起 8788）:", err.message);
           });
         },
       },
