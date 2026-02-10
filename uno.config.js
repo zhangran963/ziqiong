@@ -2,6 +2,8 @@ import { defineConfig, presetUno, presetAttributify } from "unocss";
 
 export default defineConfig({
   presets: [presetUno(), presetAttributify()],
+  // 暗色模式：根据系统 prefers-color-scheme 自动切换
+  darkMode: "media",
   // 这里可以定义你原来的 SCSS 变量为快捷方式
   shortcuts: {
     "grid-main":

@@ -23,10 +23,14 @@ dist-ssr
 *.sln
 *.sw?
 
-# Rust 编译产物
-image-processor/target/
+# Wrangler
+.wrangler
+.dev.vars
 
-# wasm-pack 生成的临时文件夹
-image-processor/pkg/
+# Environment variables
+.env
+.env.local
+.env.*.local
 
-.DS_Store
+# R2 local storage
+miniflare-R2BucketObject

@@ -12,14 +12,24 @@ export default defineConfig({
     },
   },
   server: {
-    // 线上有个独立worker可访问; 但最终逻辑应该放在本项目的functions里
+    // ⚠️ 注意：本地开发强烈建议使用 npm run dev:local
+    // 这样才能测试本地的 Functions API（新结构）
+    // 
+    // 如果使用 npm run vite，会代理到线上环境（可能还是旧 API 结构）
     proxy: {
       "/api": {
         target: "https://api.duanziqiong.com",
         changeOrigin: true,
-        // 关键点：因为线上地址是 https://api.duanziqiong.com/lyrics
-        // 而本地请求是 /api/lyrics，所以我们需要把开头的 /api 去掉
+        // 代理到线上环境（去掉 /api 前缀）
         rewrite: (path) => path.replace(/^\/api/, ""),
+        configure: (proxy, options) => {
+          proxy.on('error', (err, req, res) => {
+            console.log('代理错误:', err);
+          });
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            console.log('代理请求:', req.method, req.url, '→', options.target + req.url);
+          });
+        },
       },
     },
   },
